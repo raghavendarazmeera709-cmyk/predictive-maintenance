@@ -1,0 +1,10 @@
+from .robot import router as robot_router
+from .sensor import router as sensor_router
+from .telemetry import router as telemetry_router
+from .prediction import router as prediction_router
+from .maintenance import router as maintenance_router
+from .incident import router as incident_router
+from .notification import router as notification_router
+from .user import router as user_router
+from .auth import router as auth_router
+from .health import router as health_router
