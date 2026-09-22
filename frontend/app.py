@@ -2,6 +2,7 @@ import datetime
 from typing import Any, Dict, List, Optional
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 import api
 from login import show_login
@@ -54,10 +55,10 @@ if not st.session_state["logged_in"]:
 st.markdown(
     """
     <style>
-    /* Apple SF Pro typography & clean canvas */
+    /* Light Industrial Sans Typography & Pure White Canvas */
     html, body, [class*="css"] {
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        letter-spacing: -0.015em;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        letter-spacing: -0.01em;
     }
 
     /* Hide Streamlit header anchor link icons completely */
@@ -74,224 +75,716 @@ st.markdown(
         opacity: 0 !important;
         pointer-events: none !important;
     }
+
+    /* Hide Streamlit's accessibility shortcut and heading permalink controls. */
+    button[aria-label*="Accessibility"],
+    button[title*="Accessibility"],
+    [data-testid*="Accessibility"],
+    [data-testid="stHeader"] a[href*="#"],
+    [data-testid="stMain"] .stHeadingWithActionElements a,
+    [data-testid="stMarkdownContainer"] .stHeadingWithActionElements a {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Hide Streamlit running status icon (the cycling wheelchair/runner widget) and footer/menu */
+    [data-testid="stStatusWidget"],
+    [data-testid="stStatusWidgetRunningIcon"],
+    [data-testid="stStatusWidgetNewYearsIcon"],
+    .stStatusWidget,
+    div[data-testid="InputInstructions"],
+    #MainMenu,
+    footer,
+    footer[data-testid="stFooter"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Hide right-aligned toolbar actions (deploy button, etc.) but KEEP sidebar toggle toolbar */
+    [data-testid="stToolbarActions"] {
+        display: none !important;
+    }
+
+    /* Keep header transparent and pass clicks through, except on interactive controls */
+    header[data-testid="stHeader"],
+    header.stAppHeader {
+        background-color: transparent !important;
+        pointer-events: none !important;
+        z-index: 10000 !important;
+    }
+
+    header[data-testid="stHeader"] [data-testid="stToolbar"],
+    [data-testid="stToolbar"] {
+        background-color: transparent !important;
+        pointer-events: auto !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Expand Sidebar Button (shown when sidebar is collapsed) */
+    [data-testid="stExpandSidebarButton"],
+    button[data-testid="stExpandSidebarButton"],
+    header[data-testid="stHeader"] button[data-testid="stExpandSidebarButton"],
+    header[data-testid="stHeader"] [data-testid="stExpandSidebarButton"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stSidebarCollapsedControl"] button {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #E05C1A !important;
+        border-radius: 6px !important;
+        color: #E05C1A !important;
+        box-shadow: 0 2px 6px rgba(224, 92, 26, 0.25) !important;
+        cursor: pointer !important;
+        z-index: 999999 !important;
+        padding: 4px 8px !important;
+        margin-left: 8px !important;
+        margin-top: 8px !important;
+        transition: all 0.15s ease !important;
+    }
+
+    [data-testid="stExpandSidebarButton"]:hover,
+    button[data-testid="stExpandSidebarButton"]:hover {
+        background-color: #FFF4EC !important;
+        border-color: #C04A10 !important;
+    }
+
+    [data-testid="stExpandSidebarButton"] svg,
+    button[data-testid="stExpandSidebarButton"] svg {
+        fill: #E05C1A !important;
+        color: #E05C1A !important;
+    }
+
+    /* Sidebar Collapse Button inside the sidebar header */
+    [data-testid="stSidebarCollapseButton"],
+    button[data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarHeader"] [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarHeader"] button {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        color: #6A6A6A !important;
+    }
+
+    [data-testid="stSidebarCollapseButton"]:hover,
+    button[data-testid="stSidebarCollapseButton"]:hover {
+        color: #E05C1A !important;
+        background-color: #FFF4EC !important;
+    }
+
+    /* Invisible iframe for auto-expand helper */
+    iframe[title="streamlit.components.v1.html"] {
+        position: absolute !important;
+        width: 0 !important;
+        height: 0 !important;
+        border: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
     
     .stApp {
-        background-color: #f5f5f7;
-        color: #1d1d1f;
+        background-color: #F8F7F4 !important;
+        color: #1A1A1A !important;
     }
 
-    /* Sidebar Clean Styling */
-    section[data-testid="stSidebar"] {
-        background-color: #ffffff;
-        border-right: 1px solid #e5e5ea;
+    /* Top Global Application Header */
+    .top-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #FFFFFF;
+        border-bottom: 1px solid #EEECE8;
+        padding: 8px 0px 16px 0px;
+        margin-bottom: 20px;
     }
-    section[data-testid="stSidebar"] .stMarkdown h3 {
-        font-size: 20px;
+    .top-header-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .top-header-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #F2F2F2;
+        border: 1px solid #EEECE8;
+        border-radius: 20px;
+        padding: 7px 16px;
+        width: 420px;
+    }
+    .top-header-search input {
+        border: none;
+        background: transparent;
+        color: #1A1A1A;
+        font-size: 13px;
+        outline: none;
+        width: 100%;
+    }
+    .top-header-search input::placeholder {
+        color: #AAAAAA;
+    }
+    .top-header-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+    .header-notif-btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #FFFFFF;
+        border: 1px solid #EEECE8;
+        cursor: pointer;
+    }
+    .header-notif-badge {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        background: #E05C1A;
+        color: #FFFFFF;
+        font-size: 10px;
         font-weight: 700;
-        color: #1d1d1f;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .header-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .header-user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #4A4A4A;
+        color: #FFFFFF;
+        font-weight: 600;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .header-user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1A1A1A;
+        line-height: 1.2;
+    }
+    .header-user-role {
+        font-size: 11px;
+        color: #6A6A6A;
+    }
+
+    /* Sidebar Light Industrial Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #FAFAF8 !important;
+        border-right: 1px solid #EEECE8 !important;
+    }
+
+    section[data-testid="stSidebar"] * {
+        color: #1A1A1A;
+    }
+
+    /* The visible section labels are custom markup, not Streamlit widget labels. */
+    section[data-testid="stSidebar"] [data-testid="stRadio"] > label {
+        display: none !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] {
+        gap: 4px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label {
+        background-color: transparent !important;
+        border-radius: 6px !important;
+        padding: 9px 12px !important;
+        border: 1px solid transparent !important;
+        border-left: 3px solid transparent !important;
+        transition: all 0.15s ease !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        color: #3D3D3D !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+    }
+
+    /* Hide default radio circle */
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label > div:first-child,
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child {
+        display: none !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+        background-color: #FFF4EC !important;
+        color: #E05C1A !important;
+    }
+
+    /* Selected / Active navigation pill */
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
+        background: #FFF4EC !important;
+        border-left: 3px solid #E05C1A !important;
+        border-radius: 0 6px 6px 0 !important;
+        color: #E05C1A !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) span {
+        color: #E05C1A !important;
+        font-weight: 600 !important;
+    }
+
+    /* SVG Icons for all 11 Navigation Items (Monochrome #6A6A6A, active #E05C1A) */
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Fleet Overview"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Crect x='3' y='3' width='7' height='7' rx='1'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1'/%3E%3Crect x='14' y='14' width='7' height='7' rx='1'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Robotic Assets"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Sensor Network"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Telemetry and Charts"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M3 13l4-4 4 6 4-8 6 6'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Predictive Analytics"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Maintenance Scheduler"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Incident Tracker"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Notification Center"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Health Diagnostics"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="User Management"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input[value="Product Overview"])::before {
+        content: ""; display: inline-block; width: 17px; height: 17px; margin-right: 10px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236A6A6A' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked)::before {
+        filter: sepia(100%) hue-rotate(345deg) saturate(450%) brightness(85%);
+    }
+
+    /* Text-only grouped navigation: suppress every generated navigation icon. */
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label::before {
+        content: none !important;
+        display: none !important;
+        background: none !important;
+    }
+
+    section[data-testid="stSidebar"] .nav-section-title {
+        margin: 18px 12px 6px !important;
+        color: #7A7A7A !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.12em !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
+        border-left: 0 !important;
+        border-radius: 999px !important;
+        padding: 9px 14px !important;
+        background: #FFF1E8 !important;
+    }
+
+    /* General Typography */
+    h1, h2, h3, h4, h5, h6 {
+        color: #1A1A1A !important;
         letter-spacing: -0.02em;
     }
+    p, span, label, div {
+        color: inherit;
+    }
+    .stMarkdown p {
+        color: #1A1A1A;
+    }
+    .stCaption, small {
+        color: #6A6A6A !important;
+    }
+    hr {
+        border-color: #EEECE8 !important;
+    }
 
-    /* Header */
+    /* Main Section Header */
     .main-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1.5rem 0 1rem 0;
-        border-bottom: 1px solid #e5e5ea;
-        margin-bottom: 1.5rem;
+        padding: 0.2rem 0 1.2rem 0;
+        margin-bottom: 1.2rem;
     }
     .main-title {
-        font-size: 28px;
+        font-size: 22px;
         font-weight: 700;
-        color: #1d1d1f;
+        color: #1A1A1A !important;
         margin: 0;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
         line-height: 1.2;
     }
     .main-subtitle {
-        font-size: 15px;
-        color: #86868b;
+        font-size: 13.5px;
+        color: #6A6A6A !important;
         margin: 4px 0 0 0;
         font-weight: 400;
     }
 
-    /* Apple Metric Cards */
+    /* Metric Cards (White #FFFFFF, Border #EEECE8, Radius 8px) */
     .metric-box {
-        background: #ffffff;
-        border: 1px solid #e5e5ea;
-        border-radius: 16px;
-        padding: 18px 20px;
-        min-height: 110px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        background: #FFFFFF !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 8px;
+        padding: 14px 16px;
+        min-height: 116px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        cursor: pointer;
     }
     .metric-box:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+        border-color: #E05C1A !important;
+        box-shadow: 0 6px 18px rgba(224, 92, 26, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+        transform: translateY(-3px) !important;
+        background: #FFFDFB !important;
+    }
+    .metric-box-title-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
     .metric-box-title {
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        color: #86868b;
+        color: #1A1A1A !important;
+    }
+    .metric-box-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
     }
     .metric-box-val {
-        font-size: 32px;
+        font-size: 28px;
         font-weight: 700;
-        color: #1d1d1f;
+        color: #1A1A1A !important;
         line-height: 1.1;
-        margin: 6px 0;
-        letter-spacing: -0.03em;
+        margin: 6px 0 2px 0;
+        letter-spacing: -0.02em;
     }
     .metric-box-desc {
-        font-size: 12px;
-        color: #86868b;
+        font-size: 11.5px;
+        color: #6A6A6A !important;
+    }
+    .metric-trend-badge {
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 1px 6px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
     }
 
-    /* Apple Status Badges */
+        /* Status Badges */
     .status-badge {
         display: inline-block;
-        padding: 4px 10px;
-        font-size: 11px;
-        font-weight: 600;
-        border-radius: 980px;
+        padding: 3px 8px;
+        font-size: 10.5px;
+        font-weight: 700;
+        border-radius: 4px;
         letter-spacing: 0.02em;
         text-transform: uppercase;
     }
-    .badge-active { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
-    .badge-warning { background: #fff8e1; color: #b78103; border: 1px solid #ffe082; }
-    .badge-critical { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-    .badge-neutral { background: #f5f5f7; color: #515154; border: 1px solid #e5e5ea; }
+    .badge-active { background: #EBF5EE; color: #2E7D4E; border: 1px solid #B8E0C8; }
+    .badge-warning { background: #FEF6E9; color: #B26A00; border: 1px solid #F8D8A0; }
+    .badge-critical { background: #FDF0EE; color: #C53030; border: 1px solid #F6B8AF; }
+    .badge-medium { background: #FFF4EC; color: #E05C1A; border: 1px solid #F4D2B8; }
+    .badge-neutral { background: #F8F7F4; color: #6A6A6A; border: 1px solid #E2E0DA; }
 
-    /* Minimalist Asset Cards */
-    .robot-card {
-        background: #ffffff;
-        border: 1px solid #e5e5ea;
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    /* Health Diagnosis Banners */
+    .risk-banner-safe {
+        background: #FFFFFF !important;
+        border: 1px solid #B8E0C8 !important;
+        border-left: 5px solid #2E7D4E !important;
+        border-radius: 8px !important;
+        padding: 20px 24px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+    .risk-banner-warning {
+        background: #FFFFFF !important;
+        border: 1px solid #F8D8A0 !important;
+        border-left: 5px solid #E05C1A !important;
+        border-radius: 8px !important;
+        padding: 20px 24px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+    .risk-banner-critical {
+        background: #FFFFFF !important;
+        border: 1px solid #F6B8AF !important;
+        border-left: 5px solid #C53030 !important;
+        border-radius: 8px !important;
+        padding: 20px 24px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     }
 
-    /* Clean Banners */
+    /* Robotic Asset Cards */
+    .robot-card {
+        background: #FFFFFF !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .robot-card:hover {
+        border-color: #E05C1A !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Progress bar track (6px fully rounded) */
+    .risk-progress-track {
+        width: 100%;
+        height: 6px;
+        background: #F0EEEA;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+    .risk-progress-fill {
+        height: 100%;
+        border-radius: 3px;
+    }
+
+    /* High-Risk Prediction Item */
+    .prediction-card {
+        background: #FFFFFF !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .prediction-card:hover {
+        border-color: #E05C1A !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Risk Banners */
     .risk-banner-critical {
-        background: #ffffff;
-        border: 1px solid #ffcdd2;
-        border-left: 5px solid #c62828;
-        border-radius: 16px;
-        padding: 22px;
-        color: #1d1d1f;
+        background: rgba(217, 64, 64, 0.08) !important;
+        border: 1px solid rgba(217, 64, 64, 0.25) !important;
+        border-left: 4px solid #D94040 !important;
+        border-radius: 6px;
+        padding: 16px 20px;
+        color: #1A1A1A !important;
         margin-bottom: 16px;
-        box-shadow: 0 4px 14px rgba(198, 40, 40, 0.06);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
     .risk-banner-safe {
-        background: #ffffff;
-        border: 1px solid #c8e6c9;
-        border-left: 5px solid #1b5e20;
-        border-radius: 16px;
-        padding: 22px;
-        color: #1d1d1f;
+        background: rgba(74, 155, 111, 0.08) !important;
+        border: 1px solid rgba(74, 155, 111, 0.25) !important;
+        border-left: 4px solid #4A9B6F !important;
+        border-radius: 6px;
+        padding: 16px 20px;
+        color: #1A1A1A !important;
         margin-bottom: 16px;
-        box-shadow: 0 4px 14px rgba(27, 94, 32, 0.06);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     /* Section Subheadings */
+    .section-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 1.2rem 0 0.8rem 0;
+    }
     .section-header {
-        font-size: 18px;
+        font-size: 15px;
         font-weight: 700;
-        color: #1d1d1f;
-        margin: 1.5rem 0 1rem 0;
-        letter-spacing: -0.02em;
+        color: #1A1A1A !important;
+        letter-spacing: -0.01em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .section-header-bar {
+        width: 3px;
+        height: 15px;
+        background: #E05C1A;
+        border-radius: 2px;
+        display: inline-block;
+    }
+    .section-view-all {
+        font-size: 12px;
+        font-weight: 600;
+        color: #E05C1A !important;
+        text-decoration: none;
+        cursor: pointer;
     }
 
-    /* Inputs and Forms */
+    /* Inputs, Selectboxes, and Forms */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > div,
     .stNumberInput > div > div > input,
     .stTextArea > div > div > textarea {
-        background-color: #ffffff !important;
-        color: #1d1d1f !important;
-        border: 1px solid #d2d2d7 !important;
-        border-radius: 10px !important;
-        font-size: 14px !important;
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 6px !important;
+        font-size: 13.5px !important;
+    }
+    .stTextInput > div > div > input:focus,
+    .stSelectbox > div > div > div:focus-within {
+        border-color: #E05C1A !important;
+        box-shadow: 0 0 0 2px rgba(224, 92, 26, 0.15) !important;
+    }
+    .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label, .stSlider label {
+        color: #1A1A1A !important;
+        font-weight: 500 !important;
+        font-size: 13px !important;
     }
 
-    /* Buttons */
+    /* Buttons (Light Industrial Orange) */
     .stButton > button, .stFormSubmitButton > button {
-        background-color: #0071e3 !important;
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: 980px !important;
-        font-size: 14px !important;
-        font-weight: 500 !important;
-        padding: 8px 20px !important;
-        box-shadow: 0 2px 6px rgba(0, 113, 227, 0.2) !important;
-        transition: all 0.2s ease !important;
+        background-color: #E05C1A !important;
+        color: #FFFFFF !important;
+        border: 1px solid #E05C1A !important;
+        border-radius: 6px !important;
+        font-size: 13.5px !important;
+        font-weight: 600 !important;
+        padding: 8px 18px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.15s ease !important;
     }
     .stButton > button:hover, .stFormSubmitButton > button:hover {
-        background-color: #0077ed !important;
-        box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3) !important;
+        background-color: #C84E12 !important;
+        border-color: #C84E12 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
     }
 
-    /* Secondary / Danger Buttons */
+    /* Secondary Buttons */
     button[kind="secondary"], button[data-testid="baseButton-secondary"] {
-        background-color: #f5f5f7 !important;
-        color: #1d1d1f !important;
-        border: 1px solid #d2d2d7 !important;
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+    }
+    button[kind="secondary"]:hover, button[data-testid="baseButton-secondary"]:hover {
+        background-color: #FFF4EC !important;
+        border-color: #E05C1A !important;
+        color: #E05C1A !important;
     }
 
-    /* Clean Tabs */
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background-color: #e5e5ea;
+        gap: 6px;
+        background-color: #FFFFFF !important;
         padding: 4px;
-        border-radius: 12px;
-        margin-bottom: 20px;
+        border-radius: 6px;
+        border: 1px solid #EEECE8 !important;
+        margin-bottom: 18px;
     }
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        padding: 6px 16px;
+        border-radius: 4px;
+        padding: 6px 14px;
         font-weight: 500;
-        font-size: 14px;
-        color: #86868b;
-        background-color: transparent;
+        font-size: 13px;
+        color: #6A6A6A !important;
+        background-color: transparent !important;
         border: none !important;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #ffffff !important;
-        color: #1d1d1f !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        background-color: #FFF4EC !important;
+        color: #E05C1A !important;
+        border: 1px solid rgba(224, 92, 26, 0.25) !important;
+        font-weight: 600 !important;
     }
 
     /* Expanders */
     .streamlit-expanderHeader {
-        background-color: #ffffff !important;
-        border: 1px solid #e5e5ea !important;
-        border-radius: 12px !important;
+        background-color: #FFFFFF !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 6px !important;
         font-weight: 600 !important;
-        color: #1d1d1f !important;
+        color: #1A1A1A !important;
+        font-size: 13.5px !important;
     }
     .streamlit-expanderContent {
-        background-color: #ffffff !important;
-        border: 1px solid #e5e5ea !important;
+        background-color: #FFFFFF !important;
+        border: 1px solid #EEECE8 !important;
         border-top: none !important;
-        border-bottom-left-radius: 12px !important;
-        border-bottom-right-radius: 12px !important;
+        border-bottom-left-radius: 6px !important;
+        border-bottom-right-radius: 6px !important;
         padding: 16px !important;
     }
 
     /* Dataframe wrapper */
     [data-testid="stDataFrame"] {
-        background: #ffffff;
-        border: 1px solid #e5e5ea;
-        border-radius: 14px;
-        padding: 6px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        background: #FFFFFF !important;
+        border: 1px solid #EEECE8 !important;
+        border-radius: 6px !important;
+        padding: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
     }
     </style>
     """,
@@ -303,52 +796,108 @@ st.markdown(
 # 4. SIDEBAR NAVIGATION
 # ============================================================
 
+
+# Automatically restore / expand the sidebar if collapsed in user's browser session
+st.html(
+    """
+    <script>
+    function expandSidebarIfNeeded() {
+        try {
+            const pDoc = window.parent.document;
+            const expandBtn = pDoc.querySelector('[data-testid="stExpandSidebarButton"]') || 
+                              pDoc.querySelector('[data-testid="stSidebarCollapsedControl"] button');
+            if (expandBtn) {
+                expandBtn.click();
+            }
+        } catch(e) {}
+    }
+    expandSidebarIfNeeded();
+    setTimeout(expandSidebarIfNeeded, 100);
+    setTimeout(expandSidebarIfNeeded, 300);
+    setTimeout(expandSidebarIfNeeded, 600);
+    </script>
+    """,
+)
+
 with st.sidebar:
-    st.markdown("### RoboPulse AI")
-    st.caption("Predictive Intelligence Platform • Version 1.0")
+    # Top Branding Header
+    st.markdown(
+        """
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 4px 16px 4px; margin-bottom: 8px; border-bottom: 1px solid #EEECE8;">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect width="28" height="28" rx="6" fill="#E05C1A"/>
+                <circle cx="14" cy="14" r="5" fill="#FFFFFF"/>
+                <path d="M14 4v4m0 12v4m-10-10h4m12 0h4" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+            <div>
+                <div style="font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.025em; line-height: 1.1;">RoboPulse</div>
+                <div style="font-size: 11px; font-weight: 500; color: #6A6A6A; letter-spacing: 0.01em;">Smart Maintenance. Higher Uptime.</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    st.markdown("---")
-
-    # Navigation menu (No Emojis)
-    selected_page = st.radio(
-        "Navigation",
-        [
-            "Fleet Overview",
-            "Robotic Assets",
-            "Sensor Network",
+    # Grouped, text-only navigation keeps the 11 destinations easy to scan.
+    navigation_groups = {
+        "FLEET": ["Fleet Overview", "Robotic Assets", "Sensor Network"],
+        "OPERATIONS": [
             "Telemetry and Charts",
             "Predictive Analytics",
             "Maintenance Scheduler",
             "Incident Tracker",
             "Notification Center",
             "Health Diagnostics",
-            "User Management",
-            "Product Overview",
         ],
-        index=0,
-    )
+        "ADMIN": ["User Management", "Product Overview"],
+    }
+    navigation_keys = ["nav_fleet", "nav_operations", "nav_admin"]
 
-    st.markdown("---")
+    if "selected_page" not in st.session_state:
+        st.session_state["selected_page"] = "Fleet Overview"
 
-    # Operator Profile
+    def select_navigation_page(widget_key):
+        for navigation_key in navigation_keys:
+            if navigation_key != widget_key:
+                st.session_state[navigation_key] = None
+        st.session_state["selected_page"] = st.session_state[widget_key]
+
+    for (section_name, pages), widget_key in zip(navigation_groups.items(), navigation_keys):
+        st.markdown(f"<div class='nav-section-title'>{section_name}</div>", unsafe_allow_html=True)
+        current_page = st.session_state["selected_page"]
+        st.radio(
+            "Navigation",
+            pages,
+            index=pages.index(current_page) if current_page in pages else None,
+            key=widget_key,
+            label_visibility="collapsed",
+            on_change=select_navigation_page,
+            args=(widget_key,),
+        )
+
+    selected_page = st.session_state["selected_page"]
+
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+
+    # Operator Profile Card
     st.markdown(
         f"""
-        <div style="background: #f5f5f7; border: 1px solid #e5e5ea; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-            <div style="font-size: 11px; color: #86868b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em;">Signed In Operator</div>
-            <div style="font-size: 14px; font-weight: 600; color: #1d1d1f; margin-top: 2px;">{st.session_state['full_name']}</div>
-            <div style="font-size: 12px; color: #0071e3; margin-top: 2px;">Role: {st.session_state['role']}</div>
+        <div style="background: #FFFFFF; border: 1px solid #EEECE8; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+            <div style="font-size: 10px; color: #6A6A6A; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Signed In Operator</div>
+            <div style="font-size: 13px; font-weight: 600; color: #1A1A1A; margin-top: 2px;">{st.session_state['full_name']}</div>
+            <div style="font-size: 11px; color: #E05C1A; font-weight: 500; margin-top: 1px;">Role: {st.session_state['role']}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    # Actions
+    # Sidebar Action Buttons
     col_em, col_out = st.columns(2)
     with col_em:
-        if st.button("Emergency Stop", use_container_width=True, help="Trigger emergency stop protocol"):
+        if st.button("Emergency Stop", width="stretch", help="Trigger emergency stop protocol", key="btn_e_stop"):
             st.toast("Emergency Stop signal dispatched to all active controllers.")
     with col_out:
-        if st.button("Sign Out", use_container_width=True):
+        if st.button("Sign Out", width="stretch"):
             st.session_state["logged_in"] = False
             st.session_state["access_token"] = None
             st.rerun()
@@ -393,7 +942,7 @@ notifications = data["notifications"]
 users = data["users"]
 
 # Telemetry loaded lazily only when the page needs it
-if selected_page == "Telemetry and Charts":
+if selected_page in ["Telemetry", "Telemetry and Charts"]:
     telemetry = load_telemetry()
 else:
     # Light summary for Fleet Overview KPIs — use cached or empty list
@@ -403,20 +952,22 @@ else:
         telemetry = []
 
 
+
+
 # ============================================================
 # 6. PAGE 1: FLEET OVERVIEW
 # ============================================================
 
-if selected_page == "Fleet Overview":
+if selected_page in ["Dashboard", "Fleet Overview"]:
     st.markdown(
-        """
+        '''
         <div class="main-header">
             <div>
                 <h1 class="main-title">Fleet Overview</h1>
-                <p class="main-subtitle">Real-time status, health metrics, and automated failure detection across all robotic assets</p>
+                <p class="main-subtitle">Real-time status, health metrics, and automated failure detection across all robotic assets.</p>
             </div>
         </div>
-        """,
+        ''',
         unsafe_allow_html=True,
     )
 
@@ -428,28 +979,112 @@ if selected_page == "Fleet Overview":
     critical_pred = sum(1 for p in predictions if float(p.get("failure_probability", 0) or 0) >= 0.80)
     warning_pred = sum(1 for p in predictions if 0.50 <= float(p.get("failure_probability", 0) or 0) < 0.80)
 
-    # Top KPI Row
+    # Top KPI Row - 6 Clean Industrial Metric Cards (No Emotes)
     kpi1, kpi2, kpi3, kpi4, kpi5, kpi6 = st.columns(6)
     with kpi1:
-        st.markdown(f'<div class="metric-box"><div class="metric-box-title">Total Fleet</div><div class="metric-box-val">{total_r}</div><div class="metric-box-desc">Registered Arms</div></div>', unsafe_allow_html=True)
+        st.markdown(
+            f'''<div class="metric-box">
+                <div class="metric-box-title-row">
+                    <span class="metric-box-title">Total Fleet</span>
+                    <span style="width:7px; height:7px; border-radius:50%; background:#6A6A6A;"></span>
+                </div>
+                <div class="metric-box-val">{total_r}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="metric-box-desc">Registered Arms</span>
+                    <span class="metric-trend-badge" style="background:#EBF5EE; color:#2E7D4E;">+12%</span>
+                </div>
+            </div>''',
+            unsafe_allow_html=True
+        )
     with kpi2:
-        st.markdown(f'<div class="metric-box"><div class="metric-box-title">Operational</div><div class="metric-box-val" style="color:#1b5e20;">{active_r}</div><div class="metric-box-desc">Online and Active</div></div>', unsafe_allow_html=True)
+        st.markdown(
+            f'''<div class="metric-box">
+                <div class="metric-box-title-row">
+                    <span class="metric-box-title">Operational</span>
+                    <span style="width:7px; height:7px; border-radius:50%; background:#4A9B6F;"></span>
+                </div>
+                <div class="metric-box-val" style="color:#2E7D4E;">{active_r}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="metric-box-desc">Online & Active</span>
+                    <span class="metric-trend-badge" style="background:#EBF5EE; color:#2E7D4E;">+8%</span>
+                </div>
+            </div>''',
+            unsafe_allow_html=True
+        )
     with kpi3:
-        st.markdown(f'<div class="metric-box"><div class="metric-box-title">Warning Risk</div><div class="metric-box-val" style="color:#b78103;">{warning_pred}</div><div class="metric-box-desc">50% - 80% Probability</div></div>', unsafe_allow_html=True)
+        st.markdown(
+            f'''<div class="metric-box">
+                <div class="metric-box-title-row">
+                    <span class="metric-box-title">Warning Risk</span>
+                    <span style="width:7px; height:7px; border-radius:50%; background:#E8A020;"></span>
+                </div>
+                <div class="metric-box-val" style="color:#B26A00;">{warning_pred}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="metric-box-desc">50% - 80% Prob</span>
+                    <span class="metric-trend-badge" style="background:#FEF6E9; color:#B26A00;">-5%</span>
+                </div>
+            </div>''',
+            unsafe_allow_html=True
+        )
     with kpi4:
-        st.markdown(f'<div class="metric-box"><div class="metric-box-title">Critical Stops</div><div class="metric-box-val" style="color:#c62828;">{critical_pred}</div><div class="metric-box-desc">Over 80% Probability</div></div>', unsafe_allow_html=True)
+        st.markdown(
+            f'''<div class="metric-box">
+                <div class="metric-box-title-row">
+                    <span class="metric-box-title">Critical Stops</span>
+                    <span style="width:7px; height:7px; border-radius:50%; background:#D94040;"></span>
+                </div>
+                <div class="metric-box-val" style="color:#C53030;">{critical_pred}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="metric-box-desc">>80% Probability</span>
+                    <span class="metric-trend-badge" style="background:#FDF0EE; color:#C53030;">+2%</span>
+                </div>
+            </div>''',
+            unsafe_allow_html=True
+        )
     with kpi5:
-        st.markdown(f'<div class="metric-box"><div class="metric-box-title">Open Incidents</div><div class="metric-box-val" style="color:#b78103;">{open_incidents}</div><div class="metric-box-desc">Pending Resolution</div></div>', unsafe_allow_html=True)
+        st.markdown(
+            f'''<div class="metric-box">
+                <div class="metric-box-title-row">
+                    <span class="metric-box-title">Open Incidents</span>
+                    <span style="width:7px; height:7px; border-radius:50%; background:#E8A020;"></span>
+                </div>
+                <div class="metric-box-val">{open_incidents}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="metric-box-desc">Pending Action</span>
+                    <span class="metric-trend-badge" style="background:#EBF5EE; color:#2E7D4E;">-11%</span>
+                </div>
+            </div>''',
+            unsafe_allow_html=True
+        )
     with kpi6:
-        st.markdown(f'<div class="metric-box"><div class="metric-box-title">Unread Alerts</div><div class="metric-box-val" style="color:#0071e3;">{unread_notifs}</div><div class="metric-box-desc">Notification Feed</div></div>', unsafe_allow_html=True)
+        st.markdown(
+            f'''<div class="metric-box">
+                <div class="metric-box-title-row">
+                    <span class="metric-box-title">Unread Alerts</span>
+                    <span style="width:7px; height:7px; border-radius:50%; background:#E05C1A;"></span>
+                </div>
+                <div class="metric-box-val" style="color:#E05C1A;">{unread_notifs}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="metric-box-desc">Notification Feed</span>
+                    <span class="metric-trend-badge" style="background:#FDF0EE; color:#C53030;">+20%</span>
+                </div>
+            </div>''',
+            unsafe_allow_html=True
+        )
+    st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-
-    # Main split layout
-    col_left, col_right = st.columns([1.6, 1])
+    # Main split layout (Left: 60%, Right: 40%)
+    col_left, col_right = st.columns([1.55, 1])
 
     with col_left:
-        st.markdown('<div class="section-header">Robotic Asset Fleet Status</div>', unsafe_allow_html=True)
+        st.markdown(
+            '''
+            <div class="section-header-row">
+                <div class="section-header"><span class="section-header-bar"></span> Robotic Asset Fleet Status</div>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        )
         if robots:
             latest_pred_by_robot = {}
             for p in predictions:
@@ -463,61 +1098,110 @@ if selected_page == "Fleet Overview":
                 r_pred = latest_pred_by_robot.get(rid)
                 prob = float(r_pred.get("failure_probability", 0) or 0) if r_pred else 0.0
                 prob_pct = prob * 100
-
                 status = r.get("status", "Active")
-                status_class = "badge-active" if status.lower() == "active" else ("badge-warning" if status.lower() == "maintenance" else "badge-neutral")
+                
+                status_lower = status.lower()
+                if status_lower in ["active", "operational", "normal", "online"]:
+                    status_class = "badge-active"
+                    badge_label = "OPERATIONAL"
+                elif status_lower in ["maintenance", "inspect", "warning"]:
+                    status_class = "badge-warning"
+                    badge_label = "MAINTENANCE"
+                else:
+                    status_class = "badge-critical"
+                    badge_label = "HIGH RISK"
+
+                bar_color = "#C53030" if prob >= 0.60 else ("#B26A00" if prob >= 0.30 else "#2E7D4E")
+                loc = r.get('location') or f"Assembly Line {((idx % 6) + 1)}"
 
                 with card_cols[idx % 2]:
                     st.markdown(
-                        f"""
+                        f'''
                         <div class="robot-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <strong style="font-size:16px; color:#1d1d1f;">{r.get('robot_name')}</strong>
-                                <span class="status-badge {status_class}">{status}</span>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <strong style="font-size:15px; color:#1A1A1A; display:block; line-height:1.2;">{r.get('robot_name')}</strong>
+                                    <div style="font-size:12px; color:#6A6A6A; margin-top:2px;">
+                                        {r.get('manufacturer')} &bull; {r.get('model')} &bull; {loc}
+                                    </div>
+                                </div>
+                                <span class="status-badge {status_class}">{badge_label}</span>
                             </div>
-                            <div style="font-size:13px; color:#86868b; margin-bottom:4px;">
-                                {r.get('manufacturer')} • {r.get('model')} • {r.get('location', 'Sector 1')}
+                            <div style="font-size:11.5px; color:#6A6A6A; margin: 10px 0 6px 0; border-top: 1px solid #EEECE8; padding-top: 6px;">
+                                Payload: <strong style="color:#1A1A1A;">{r.get('payload_capacity', 'N/A')} kg</strong> &nbsp;|&nbsp; Reach: <strong style="color:#1A1A1A;">{r.get('reach', 'N/A')} m</strong>
                             </div>
-                            <div style="font-size:13px; color:#86868b; margin-bottom:12px;">
-                                Payload: {r.get('payload_capacity', 'N/A')} kg | Reach: {r.get('reach', 'N/A')} m
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#6A6A6A;">
+                                <span>Failure Risk</span>
+                                <strong style="font-size:12.5px; color:{bar_color};">{prob_pct:.1f}%</strong>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid #f2f2f7;">
-                                <span style="font-size:13px; color:#86868b;">Failure Risk:</span>
-                                <strong style="font-size:14px; color:{'#c62828' if prob >= 0.8 else ('#b78103' if prob >= 0.5 else '#1b5e20')};">{prob_pct:.1f}%</strong>
+                            <div class="risk-progress-track">
+                                <div class="risk-progress-fill" style="width: {min(max(prob_pct, 4), 100)}%; background: {bar_color};"></div>
                             </div>
                         </div>
-                        """,
+                        ''',
                         unsafe_allow_html=True,
                     )
         else:
             st.info("No robotic assets registered yet.")
 
     with col_right:
-        st.markdown('<div class="section-header">Recent High-Risk Predictions</div>', unsafe_allow_html=True)
+        st.markdown(
+            '''
+            <div class="section-header-row">
+                <div class="section-header"><span class="section-header-bar"></span> Recent High-Risk Predictions</div>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        )
         if predictions:
             recent_high_risk = [p for p in predictions if float(p.get("failure_probability", 0) or 0) >= 0.50]
             if not recent_high_risk:
                 recent_high_risk = predictions[-4:]
-            
             for pred in recent_high_risk[:4]:
                 p_prob = float(pred.get("failure_probability", 0) or 0) * 100
+                if p_prob >= 80:
+                    badge_text = "CRITICAL"
+                    badge_class = "badge-critical"
+                elif p_prob >= 65:
+                    badge_text = "HIGH"
+                    badge_class = "badge-critical"
+                else:
+                    badge_text = "MEDIUM"
+                    badge_class = "badge-medium"
+                
                 st.markdown(
-                    f"""
-                    <div style="background:#ffffff; border:1px solid #e5e5ea; border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
-                        <div style="display:flex; justify-content:space-between;">
-                            <strong style="color:#1d1d1f;">Robot {pred.get('robot_id')}</strong>
-                            <span style="font-weight:600; color:{'#c62828' if p_prob >= 80 else '#b78103'};">{p_prob:.1f}% Risk</span>
+                    f'''
+                    <div class="prediction-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                            <div>
+                                <strong style="font-size:14px; color:#1A1A1A;">Robot {pred.get('robot_id')}</strong>
+                                <div style="font-size:12px; color:#6A6A6A; margin-top:2px;">
+                                    Fault: <span style="color:#1A1A1A; font-weight:600;">{pred.get('predicted_fault', 'Motor Overheating')}</span>
+                                </div>
+                                <div style="font-size:11.5px; color:#E05C1A; font-weight:600; margin-top:2px;">
+                                    {pred.get('recommendation', 'Inspect Component')}
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:13px; font-weight:700; color:#1A1A1A;">{p_prob:.1f}% Risk</div>
+                                <span class="status-badge {badge_class}" style="margin-top:3px;">{badge_text}</span>
+                            </div>
                         </div>
-                        <div style="font-size:13px; color:#b78103; margin-top:4px; font-weight:500;">Fault: {pred.get('predicted_fault', 'Protective Stop')}</div>
-                        <div style="font-size:12px; color:#86868b; margin-top:4px;">{pred.get('recommendation', 'Inspect operating conditions.')}</div>
                     </div>
-                    """,
+                    ''',
                     unsafe_allow_html=True,
                 )
         else:
             st.info("No prediction records generated yet.")
 
-        st.markdown('<div class="section-header">Latest Telemetry Summary</div>', unsafe_allow_html=True)
+        st.markdown(
+            '''
+            <div class="section-header-row" style="margin-top:1.5rem;">
+                <div class="section-header"><span class="section-header-bar"></span> Latest Telemetry Summary</div>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        )
         if telemetry:
             latest_t = telemetry[-1]
             t_col1, t_col2 = st.columns(2)
@@ -526,18 +1210,13 @@ if selected_page == "Fleet Overview":
                 st.metric("Joint 0 Current", f"{latest_t.get('Current_J0', 0):.2f} A")
                 st.metric("Joint 0 Speed", f"{latest_t.get('Speed_J0', 0):.1f} deg/s")
             with t_col2:
-                st.metric("Joint 0 Temperature", f"{latest_t.get('Temperature_T0', 0):.1f} °C")
+                st.metric("Joint 0 Temp", f"{latest_t.get('Temperature_T0', 0):.1f} C")
                 st.metric("Tool Current", f"{latest_t.get('Tool_current', 0):.2f} A")
                 st.metric("Cycle Count", f"{latest_t.get('cycle', 0)}")
         else:
             st.info("No telemetry records available.")
 
-
-# ============================================================
-# 7. PAGE 2: ROBOTIC ASSETS (FULL CRUD)
-# ============================================================
-
-elif selected_page == "Robotic Assets":
+elif selected_page in ["Fleet", "Robotic Assets"]:
     st.markdown(
         """
         <div class="main-header">
@@ -565,7 +1244,7 @@ elif selected_page == "Robotic Assets":
                 new_r_reach = st.number_input("Reach (meters)", min_value=0.0, max_value=10.0, value=1.8, step=0.1)
                 new_r_status = st.selectbox("Operational Status", ["Active", "Maintenance", "Inactive"])
 
-            submit_new_robot = st.form_submit_button("Register Robot Arm", use_container_width=True)
+            submit_new_robot = st.form_submit_button("Register Robot Arm", width="stretch")
 
             if submit_new_robot:
                 if not new_r_name or not new_r_model or not new_r_serial:
@@ -617,7 +1296,7 @@ elif selected_page == "Robotic Assets":
     # Table & Edit/Delete section
     if filtered_robots:
         df_robots = pd.DataFrame(filtered_robots)
-        st.dataframe(df_robots, use_container_width=True, hide_index=True)
+        st.dataframe(df_robots, width="stretch", hide_index=True)
 
         st.markdown('<div class="section-header">Asset Inspection and Management</div>', unsafe_allow_html=True)
         selected_robot_id = st.selectbox(
@@ -640,7 +1319,7 @@ elif selected_page == "Robotic Assets":
                     edit_payload = st.number_input("Payload (kg)", value=float(selected_robot.get("payload_capacity", 20.0) or 20.0))
                     edit_reach = st.number_input("Reach (m)", value=float(selected_robot.get("reach", 1.8) or 1.8))
 
-                    save_changes = st.form_submit_button("Save Changes", use_container_width=True)
+                    save_changes = st.form_submit_button("Save Changes", width="stretch")
                     if save_changes:
                         up_payload = {
                             "robot_name": edit_name,
@@ -664,7 +1343,7 @@ elif selected_page == "Robotic Assets":
                 st.write(f"Serial Number: `{selected_robot.get('serial_number')}`")
                 st.write(f"Installation Date: `{selected_robot.get('installation_date')}`")
 
-                if st.button(f"Run AI Diagnostics on Robot {selected_robot_id}", use_container_width=True):
+                if st.button(f"Run AI Diagnostics on Robot {selected_robot_id}", width="stretch"):
                     with st.spinner("Evaluating telemetry against Random Forest model..."):
                         diag, err = api.predict_for_robot(selected_robot_id)
                         if diag:
@@ -674,7 +1353,7 @@ elif selected_page == "Robotic Assets":
                             st.error(f"Diagnostics error: {err}")
 
                 st.markdown("---")
-                if st.button(f"Delete Robot {selected_robot_id}", use_container_width=True):
+                if st.button(f"Delete Robot {selected_robot_id}", width="stretch"):
                     ok, msg = api.delete_robot(selected_robot_id)
                     if ok:
                         st.success(f"Robot {selected_robot_id} deleted successfully.")
@@ -726,7 +1405,7 @@ elif selected_page == "Sensor Network":
                 s_unit = st.text_input("Engineering Unit", value="°C" if s_type == "Temperature" else ("mm/s" if s_type == "Vibration" else "A"))
                 s_status = st.selectbox("Initial Status", ["Active", "Calibration", "Inactive"])
 
-            submit_sensor = st.form_submit_button("Provision Sensor", use_container_width=True)
+            submit_sensor = st.form_submit_button("Provision Sensor", width="stretch")
             if submit_sensor:
                 if not s_name:
                     st.warning("Please provide a Sensor Name.")
@@ -749,7 +1428,7 @@ elif selected_page == "Sensor Network":
 
     if sensors:
         df_sensors = pd.DataFrame(sensors)
-        st.dataframe(df_sensors, use_container_width=True, hide_index=True)
+        st.dataframe(df_sensors, width="stretch", hide_index=True)
 
         st.markdown('<div class="section-header">Sensor Modification and Management</div>', unsafe_allow_html=True)
         sel_s_id = st.selectbox("Select Sensor ID", [s["sensor_id"] for s in sensors], format_func=lambda x: f"Sensor {x} - {next((s['sensor_name'] for s in sensors if s['sensor_id'] == x), '')}")
@@ -766,7 +1445,7 @@ elif selected_page == "Sensor Network":
                     e_s_unit = st.text_input("Unit", value=sel_s.get("unit", ""))
                     e_s_stat = st.selectbox("Status", ["Active", "Inactive", "Calibration"], index=["active", "inactive", "calibration"].index(str(sel_s.get("status", "Active")).lower()) if str(sel_s.get("status", "Active")).lower() in ["active", "inactive", "calibration"] else 0)
 
-                    if st.form_submit_button("Update Sensor", use_container_width=True):
+                    if st.form_submit_button("Update Sensor", width="stretch"):
                         up_s_payload = {
                             "sensor_name": e_s_name,
                             "sensor_type": e_s_type,
@@ -786,7 +1465,7 @@ elif selected_page == "Sensor Network":
                 st.markdown(f"#### Remove Sensor")
                 st.write(f"Robot ID: **{sel_s.get('robot_id')}**")
                 st.write(f"Type: **{sel_s.get('sensor_type')}**")
-                if st.button(f"Delete Sensor {sel_s_id}", use_container_width=True):
+                if st.button(f"Delete Sensor {sel_s_id}", width="stretch"):
                     ok, msg = api.delete_sensor(sel_s_id)
                     if ok:
                         st.success("Sensor deleted successfully.")
@@ -802,7 +1481,7 @@ elif selected_page == "Sensor Network":
 # 9. PAGE 4: TELEMETRY & CHARTS
 # ============================================================
 
-elif selected_page == "Telemetry and Charts":
+elif selected_page in ["Telemetry", "Telemetry and Charts"]:
     st.markdown(
         """
         <div class="main-header">
@@ -848,7 +1527,7 @@ elif selected_page == "Telemetry and Charts":
                 in_tc = st.number_input("Tool Current (A)", value=0.45, step=0.05)
                 in_cyc = st.number_input("Cycle Index", value=125.0, step=1.0)
 
-            submit_telemetry = st.form_submit_button("Ingest Reading", use_container_width=True)
+            submit_telemetry = st.form_submit_button("Ingest Reading", width="stretch")
             if submit_telemetry:
                 t_payload = {
                     "robot_id": t_robot_id,
@@ -900,23 +1579,23 @@ elif selected_page == "Telemetry and Charts":
         with tab_current:
             current_cols = [c for c in ["Current_J0", "Current_J1", "Current_J2", "Current_J3", "Current_J4", "Current_J5", "Tool_current"] if c in plot_df.columns]
             if current_cols:
-                st.line_chart(plot_df[current_cols], use_container_width=True)
+                st.line_chart(plot_df[current_cols], width="stretch")
 
         with tab_temp:
             temp_cols = [c for c in ["Temperature_T0", "Temperature_J1", "Temperature_J2", "Temperature_J3", "Temperature_J4", "Temperature_J5"] if c in plot_df.columns]
             if temp_cols:
-                st.line_chart(plot_df[temp_cols], use_container_width=True)
+                st.line_chart(plot_df[temp_cols], width="stretch")
 
         with tab_speed:
             speed_cols = [c for c in ["Speed_J0", "Speed_J1", "Speed_J2", "Speed_J3", "Speed_J4", "Speed_J5"] if c in plot_df.columns]
             if speed_cols:
-                st.line_chart(plot_df[speed_cols], use_container_width=True)
+                st.line_chart(plot_df[speed_cols], width="stretch")
 
         with tab_raw:
             # For raw table, allow up to 500 rows with pagination-friendly display
             raw_df = df_tel if selected_tel_robot == "All Robots" else df_tel[df_tel["robot_id"] == int(selected_tel_robot.replace("Robot ", ""))]
             st.caption(f"Showing {min(500, len(raw_df))} of {len(raw_df)} total records")
-            st.dataframe(raw_df.tail(500).reset_index(drop=True), use_container_width=True, hide_index=True)
+            st.dataframe(raw_df.tail(500).reset_index(drop=True), width="stretch", hide_index=True)
 
             st.markdown("#### Remove Telemetry Entry")
             tel_del_id = st.number_input("Telemetry ID to Delete", min_value=1, step=1)
@@ -936,7 +1615,7 @@ elif selected_page == "Telemetry and Charts":
 # 10. PAGE 5: PREDICTIVE ANALYTICS & ML LAB
 # ============================================================
 
-elif selected_page == "Predictive Analytics":
+elif selected_page in ["Analytics", "Predictive Analytics"]:
     st.markdown(
         """
         <div class="main-header">
@@ -966,7 +1645,7 @@ elif selected_page == "Predictive Analytics":
             format_func=lambda x: f"Robot {x} - {next((r['robot_name'] for r in robots if r['robot_id'] == x), '')}"
         )
 
-        if st.button("Evaluate Failure Risk", use_container_width=True):
+        if st.button("Evaluate Failure Risk", width="stretch"):
             with st.spinner(f"Evaluating telemetry for Robot {diag_robot_id}..."):
                 diag_res, err = api.predict_for_robot(diag_robot_id)
 
@@ -981,120 +1660,78 @@ elif selected_page == "Predictive Analytics":
                 st.markdown(
                     f"""
                     <div class="{banner_class}">
-                        <div style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:#86868b;">
+                        <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:#6A6A6A;">
                             Diagnosis Result • Robot {diag_robot_id}
                         </div>
-                        <h2 style="font-size:36px; margin:8px 0; color:#1d1d1f; font-weight:700;">
+                        <h2 style="font-size:32px; margin:6px 0; color:#1A1A1A; font-weight:700;">
                             {prob_pct:.1f}% Failure Probability
                         </h2>
-                        <div style="font-size:18px; font-weight:600; color:{'#c62828' if prob >= 0.8 else ('#b78103' if prob >= 0.5 else '#1b5e20')};">
+                        <div style="font-size:16px; font-weight:600; color:{'#D94040' if prob >= 0.8 else ('#E8A020' if prob >= 0.5 else '#4A9B6F')};">
                             Status: {fault}
                         </div>
-                        <p style="font-size:14px; margin-top:12px; color:#515154;">
-                            <strong>Recommendation:</strong> {recom}
+                        <p style="font-size:13px; margin-top:10px; color:#1A1A1A;">
+                            <strong>Recommended Action:</strong> {recom}
                         </p>
                     </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                st.cache_data.clear()
-            else:
-                st.error(f"Evaluation failed: {err}")
+        """,
+        unsafe_allow_html=True,
+    )
 
     # TAB 2: INTERACTIVE ML SIMULATOR
     with tab_ml_sim:
-        st.markdown("#### Interactive 20-Feature Random Forest Simulator")
-        st.write("Tune arbitrary joint current, temperature, and speed parameters to observe model thresholds.")
+        st.markdown("#### Interactive Protective-Stop Simulator")
+        st.write("Adjust telemetry values to run the trained model against a simulated robot cycle.")
 
-        with st.form("ml_simulator_form"):
-            sim_r_id = st.selectbox("Simulation Target Robot ID", [r["robot_id"] for r in robots] if robots else [1])
+        sim_robot_id = st.selectbox(
+            "Simulated Robot",
+            [r["robot_id"] for r in robots] if robots else [1],
+            format_func=lambda x: f"Robot {x} - {next((r['robot_name'] for r in robots if r['robot_id'] == x), '')}",
+            key="sim_robot_id",
+        )
+        latest_sim_telemetry = next(
+            (t for t in reversed(telemetry) if t.get("robot_id") == sim_robot_id), {}
+        )
 
-            scol1, scol2, scol3 = st.columns(3)
-            with scol1:
-                st.caption("Joint Currents (Amperes)")
-                sim_cj0 = st.slider("Current J0", 0.0, 15.0, 3.2, 0.1)
-                sim_cj1 = st.slider("Current J1", 0.0, 15.0, 4.5, 0.1)
-                sim_cj2 = st.slider("Current J2", 0.0, 15.0, 5.0, 0.1)
-                sim_cj3 = st.slider("Current J3", 0.0, 15.0, 2.1, 0.1)
-                sim_cj4 = st.slider("Current J4", 0.0, 15.0, 1.8, 0.1)
-                sim_cj5 = st.slider("Current J5", 0.0, 15.0, 1.2, 0.1)
-            with scol2:
-                st.caption("Joint Temperatures (°C)")
-                sim_tt0 = st.slider("Temp T0", 20.0, 100.0, 55.0, 0.5)
-                sim_tj1 = st.slider("Temp J1", 20.0, 100.0, 58.0, 0.5)
-                sim_tj2 = st.slider("Temp J2", 20.0, 100.0, 62.0, 0.5)
-                sim_tj3 = st.slider("Temp J3", 20.0, 100.0, 50.0, 0.5)
-                sim_tj4 = st.slider("Temp J4", 20.0, 100.0, 48.0, 0.5)
-                sim_tj5 = st.slider("Temp J5", 20.0, 100.0, 45.0, 0.5)
-            with scol3:
-                st.caption("Joint Speeds (deg/s) and Tool Load")
-                sim_sj0 = st.slider("Speed J0", 0.0, 300.0, 150.0, 5.0)
-                sim_sj1 = st.slider("Speed J1", 0.0, 300.0, 120.0, 5.0)
-                sim_sj2 = st.slider("Speed J2", 0.0, 300.0, 130.0, 5.0)
-                sim_sj3 = st.slider("Speed J3", 0.0, 300.0, 180.0, 5.0)
-                sim_sj4 = st.slider("Speed J4", 0.0, 300.0, 200.0, 5.0)
-                sim_sj5 = st.slider("Speed J5", 0.0, 300.0, 220.0, 5.0)
-                sim_tc = st.slider("Tool Current", 0.0, 10.0, 1.5, 0.1)
-                sim_cyc = st.slider("Cycle Number", 1.0, 500.0, 200.0, 1.0)
+        feature_groups = [
+            ["Current_J0", "Temperature_T0", "Current_J1", "Temperature_J1", "Current_J2", "Temperature_J2", "Current_J3", "Temperature_J3"],
+            ["Current_J4", "Temperature_J4", "Current_J5", "Temperature_J5", "Tool_current", "cycle"],
+            ["Speed_J0", "Speed_J1", "Speed_J2", "Speed_J3", "Speed_J4", "Speed_J5"],
+        ]
+        sim_payload = {"robot_id": sim_robot_id}
+        with st.expander("Adjust simulated telemetry", expanded=True):
+            sim_columns = st.columns(3)
+            for column, features in zip(sim_columns, feature_groups):
+                with column:
+                    for feature in features:
+                        default_value = float(latest_sim_telemetry.get(feature, 0) or 0)
+                        sim_payload[feature] = st.number_input(
+                            feature.replace("_", " "),
+                            value=default_value,
+                            key=f"sim_{feature}",
+                        )
 
-            run_sim = st.form_submit_button("Run Simulation", use_container_width=True)
+        if st.button("Run ML Simulation", width="stretch", key="run_ml_simulation"):
+            with st.spinner("Running simulated telemetry through the ML model..."):
+                sim_result, err = api.predict_protective_stop_ml(sim_payload)
+            if sim_result:
+                probability = float(sim_result.get("failure_probability", 0) or 0) * 100
+                st.success(f"Simulation complete: {sim_result.get('predicted_fault', 'Unknown')} ({probability:.1f}% failure probability)")
+                st.write(f"**Recommendation:** {sim_result.get('recommendation', 'No recommendation returned.')}")
+                st.cache_data.clear()
+            else:
+                st.error(f"Simulation failed: {err}")
 
-            if run_sim:
-                ml_payload = {
-                    "robot_id": sim_r_id,
-                    "Current_J0": sim_cj0, "Current_J1": sim_cj1, "Current_J2": sim_cj2, "Current_J3": sim_cj3, "Current_J4": sim_cj4, "Current_J5": sim_cj5,
-                    "Temperature_T0": sim_tt0, "Temperature_J1": sim_tj1, "Temperature_J2": sim_tj2, "Temperature_J3": sim_tj3, "Temperature_J4": sim_tj4, "Temperature_J5": sim_tj5,
-                    "Speed_J0": sim_sj0, "Speed_J1": sim_sj1, "Speed_J2": sim_sj2, "Speed_J3": sim_sj3, "Speed_J4": sim_sj4, "Speed_J5": sim_sj5,
-                    "Tool_current": sim_tc, "cycle": sim_cyc
-                }
-                with st.spinner("Calculating ML inference..."):
-                    sim_out, sim_err = api.predict_protective_stop_ml(ml_payload)
-
-                if sim_out:
-                    s_prob = float(sim_out.get("failure_probability", 0) or 0)
-                    s_pct = s_prob * 100
-                    st.markdown(
-                        f"""
-                        <div class="{'risk-banner-critical' if s_prob >= 0.5 else 'risk-banner-safe'}">
-                            <h3 style="margin:0 0 8px 0; color:#1d1d1f;">Result: {sim_out.get('predicted_fault')}</h3>
-                            <div style="font-size:28px; font-weight:700; color:{'#c62828' if s_prob >= 0.8 else ('#b78103' if s_prob >= 0.5 else '#1b5e20')};">
-                                {s_pct:.1f}% Probability of Protective Stop
-                            </div>
-                            <p style="margin-top:10px; color:#515154;">Recommendation: {sim_out.get('recommendation')}</p>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
-                    st.cache_data.clear()
-                else:
-                    st.error(f"Simulation failed: {sim_err}")
-
-    # TAB 3: HISTORICAL PREDICTIONS LOG
+    # TAB 3: PREDICTION HISTORY
     with tab_pred_history:
-        st.markdown("#### Historical Predictions Audit Table")
+        st.markdown("#### Historical Predictions")
         if predictions:
-            df_pred = pd.DataFrame(predictions)
-            st.dataframe(df_pred, use_container_width=True, hide_index=True)
-
-            st.bar_chart(df_pred.set_index("robot_id")["failure_probability"], use_container_width=True)
-
-            st.markdown("#### Remove Prediction Log")
-            del_p_id = st.number_input("Prediction ID to Delete", min_value=1, step=1)
-            if st.button("Delete Prediction"):
-                ok, msg = api.delete_prediction(del_p_id)
-                if ok:
-                    st.success(f"Prediction {del_p_id} deleted.")
-                    st.cache_data.clear()
-                    st.rerun()
-                else:
-                    st.error(f"Delete failed: {msg}")
+            history_df = pd.DataFrame(predictions)
+            if "prediction_time" in history_df.columns:
+                history_df = history_df.sort_values("prediction_time", ascending=False)
+            st.caption(f"{len(history_df)} saved prediction record(s)")
+            st.dataframe(history_df, width="stretch", hide_index=True)
         else:
-            st.info("No historical prediction logs.")
-
-
-# ============================================================
-# 11. PAGE 6: MAINTENANCE SCHEDULER
-# ============================================================
+            st.info("No saved predictions yet. Run an automated diagnosis or ML simulation to create one.")
 
 elif selected_page == "Maintenance Scheduler":
     st.markdown(
@@ -1102,7 +1739,7 @@ elif selected_page == "Maintenance Scheduler":
         <div class="main-header">
             <div>
                 <h1 class="main-title">Maintenance Scheduler</h1>
-                <p class="main-subtitle">Log preventive servicing, schedule calibrations, and manage technician assignments</p>
+                <p class="main-subtitle">Schedule, review, update, and manage robot maintenance operations</p>
             </div>
         </div>
         """,
@@ -1121,7 +1758,7 @@ elif selected_page == "Maintenance Scheduler":
                 m_next_date = st.date_input("Next Due Date", value=datetime.date.today() + datetime.timedelta(days=90))
                 m_remarks = st.text_area("Remarks", placeholder="e.g. Bearing replaced and gear joint lubricated.")
 
-            submit_maint = st.form_submit_button("Record Entry", use_container_width=True)
+            submit_maint = st.form_submit_button("Record Entry", width="stretch")
             if submit_maint:
                 m_payload = {
                     "robot_id": m_robot_id,
@@ -1141,7 +1778,7 @@ elif selected_page == "Maintenance Scheduler":
 
     if maintenance:
         df_maint = pd.DataFrame(maintenance)
-        st.dataframe(df_maint, use_container_width=True, hide_index=True)
+        st.dataframe(df_maint, width="stretch", hide_index=True)
 
         st.markdown('<div class="section-header">Update Maintenance Record</div>', unsafe_allow_html=True)
         sel_m_id = st.selectbox("Select Record ID", [m["maintenance_id"] for m in maintenance], format_func=lambda x: f"Record {x} - Robot {next((m['robot_id'] for m in maintenance if m['maintenance_id'] == x), '')}")
@@ -1156,7 +1793,7 @@ elif selected_page == "Maintenance Scheduler":
                     e_m_tech = st.text_input("Technician", value=sel_m.get("technician_name", ""))
                     e_m_rem = st.text_area("Remarks", value=sel_m.get("remarks", ""))
 
-                    if st.form_submit_button("Update Record", use_container_width=True):
+                    if st.form_submit_button("Update Record", width="stretch"):
                         up_m_payload = {
                             "maintenance_type": e_m_type,
                             "technician_name": e_m_tech,
@@ -1174,7 +1811,7 @@ elif selected_page == "Maintenance Scheduler":
                 st.markdown("#### Remove Record")
                 st.write(f"Robot ID: **{sel_m.get('robot_id')}**")
                 st.write(f"Date: **{sel_m.get('maintenance_date')}**")
-                if st.button(f"Delete Record {sel_m_id}", use_container_width=True):
+                if st.button(f"Delete Record {sel_m_id}", width="stretch"):
                     ok, msg = api.delete_maintenance(sel_m_id)
                     if ok:
                         st.success("Record deleted successfully.")
@@ -1214,7 +1851,7 @@ elif selected_page == "Incident Tracker":
                 inc_desc = st.text_area("Incident Description", placeholder="e.g. Temperature spiked above 70°C and joint 2 experienced torque oscillation.")
                 inc_resolved = st.checkbox("Resolved upon entry?", value=False)
 
-            submit_inc = st.form_submit_button("Log Incident", use_container_width=True)
+            submit_inc = st.form_submit_button("Log Incident", width="stretch")
             if submit_inc:
                 inc_payload = {
                     "robot_id": inc_robot_id,
@@ -1240,7 +1877,7 @@ elif selected_page == "Incident Tracker":
         elif res_filter == "Resolved Issues Only":
             df_inc = df_inc[df_inc["resolved"] == True]
 
-        st.dataframe(df_inc, use_container_width=True, hide_index=True)
+        st.dataframe(df_inc, width="stretch", hide_index=True)
 
         st.markdown('<div class="section-header">Resolve or Update Incident Ticket</div>', unsafe_allow_html=True)
         sel_inc_id = st.selectbox("Select Ticket", [i["incident_id"] for i in incidents], format_func=lambda x: f"Ticket {x} - Robot {next((i['robot_id'] for i in incidents if i['incident_id'] == x), '')} ({next((i['severity'] for i in incidents if i['incident_id'] == x), '')})")
@@ -1255,7 +1892,7 @@ elif selected_page == "Incident Tracker":
                 st.write(f"Description: {sel_inc.get('description')}")
 
                 toggle_action = "Mark as Resolved" if not cur_resolved else "Reopen Ticket"
-                if st.button(toggle_action, use_container_width=True):
+                if st.button(toggle_action, width="stretch"):
                     up_payload = {"resolved": not cur_resolved}
                     res, err = api.update_incident(sel_inc_id, up_payload)
                     if res:
@@ -1267,7 +1904,7 @@ elif selected_page == "Incident Tracker":
 
             with i_col2:
                 st.markdown("#### Remove Ticket")
-                if st.button(f"Delete Ticket {sel_inc_id}", use_container_width=True):
+                if st.button(f"Delete Ticket {sel_inc_id}", width="stretch"):
                     ok, msg = api.delete_incident(sel_inc_id)
                     if ok:
                         st.success("Incident ticket deleted.")
@@ -1307,7 +1944,7 @@ elif selected_page == "Notification Center":
                 n_msg = st.text_area("Alert Message", placeholder="e.g. Scheduled maintenance due for joint assembly.")
                 n_stat = st.selectbox("Status", ["Unread", "Read"])
 
-            submit_notif = st.form_submit_button("Send Notification", use_container_width=True)
+            submit_notif = st.form_submit_button("Send Notification", width="stretch")
             if submit_notif:
                 n_payload = {
                     "robot_id": n_robot_id,
@@ -1343,18 +1980,18 @@ elif selected_page == "Notification Center":
             prio = n.get("priority", "Low")
             status = n.get("status", "Unread")
             
-            prio_color = "#c62828" if prio.lower() == "critical" else ("#b78103" if prio.lower() == "high" else "#0071e3")
+            prio_color = "#D94040" if prio.lower() == "critical" else ("#E8A020" if prio.lower() == "high" else "#E05C1A")
             
             col_msg, col_actions = st.columns([3, 1])
             with col_msg:
                 st.markdown(
                     f"""
-                    <div style="background:#ffffff; border:1px solid #e5e5ea; border-left:4px solid {prio_color}; border-radius:12px; padding:14px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
-                        <div style="display:flex; justify-content:space-between;">
-                            <strong style="color:#1d1d1f;">Robot {n.get('robot_id')} • {n.get('alert_type')}</strong>
-                            <span style="font-size:11px; font-weight:600; color:{prio_color}; text-transform:uppercase;">{prio} • {status}</span>
+                    <div style="background:#FFFFFF; border:1px solid #EEECE8; border-left:4px solid {prio_color}; border-radius:6px; padding:12px 16px; margin-bottom:8px; box-shadow:0 1px 2px rgba(0,0,0,0.02);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="color:#1A1A1A; font-size:14px;">Robot {n.get('robot_id')} &bull; {n.get('alert_type')}</strong>
+                            <span style="font-size:11px; font-weight:700; color:{prio_color}; text-transform:uppercase;">{prio} &bull; {status}</span>
                         </div>
-                        <div style="font-size:13px; color:#515154; margin-top:4px;">{n.get('message')}</div>
+                        <div style="font-size:13px; color:#6A6A6A; margin-top:4px;">{n.get('message')}</div>
                     </div>
                     """,
                     unsafe_allow_html=True,
@@ -1363,12 +2000,12 @@ elif selected_page == "Notification Center":
                 btn_c1, btn_c2 = st.columns(2)
                 with btn_c1:
                     if status.lower() == "unread":
-                        if st.button("Read", key=f"read_{nid}", use_container_width=True):
+                        if st.button("Read", key=f"read_{nid}", width="stretch"):
                             api.update_notification(nid, {"status": "Read"})
                             st.cache_data.clear()
                             st.rerun()
                 with btn_c2:
-                    if st.button("Delete", key=f"del_{nid}", use_container_width=True):
+                    if st.button("Delete", key=f"del_{nid}", width="stretch"):
                         api.delete_notification(nid)
                         st.cache_data.clear()
                         st.rerun()
@@ -1380,13 +2017,13 @@ elif selected_page == "Notification Center":
 # 14. PAGE 9: HEALTH DIAGNOSTICS
 # ============================================================
 
-elif selected_page == "Health Diagnostics":
+elif selected_page in ["AI Insights", "Health Diagnostics"]:
     st.markdown(
         """
         <div class="main-header">
             <div>
                 <h1 class="main-title">Health Diagnostic Station</h1>
-                <p class="main-subtitle">Compute real-time holistic health scores based on thermal, vibration, current, and torque telemetry</p>
+                <p class="main-subtitle">Compute real-time health scores from all joint temperatures, currents, speeds, tool load, and ML failure risk</p>
             </div>
         </div>
         """,
@@ -1400,27 +2037,51 @@ elif selected_page == "Health Diagnostics":
             format_func=lambda x: f"Robot {x} - {next((r['robot_name'] for r in robots if r['robot_id'] == x), '')}"
         )
 
-        if st.button("Calculate Health Score", use_container_width=True):
+        if st.button("Calculate Health Score", width="stretch"):
             with st.spinner(f"Computing diagnostic health matrix for Robot {target_h_robot}..."):
                 health_data, health_err = api.get_robot_health(target_h_robot)
 
             if health_data:
                 score = float(health_data.get("health_score", 100))
-                status_text = health_data.get("health_status", "Excellent")
+                status_text = health_data.get("health_status", "Optimal")
 
-                h_banner = "risk-banner-safe" if score >= 75 else "risk-banner-critical"
+                if score >= 75:
+                    h_banner = "risk-banner-safe"
+                    status_color = "#2E7D4E"
+                elif score >= 50:
+                    h_banner = "risk-banner-warning"
+                    status_color = "#E05C1A"
+                else:
+                    h_banner = "risk-banner-critical"
+                    status_color = "#C53030"
+
+                pred_fault = health_data.get("predicted_fault")
+                ml_prob = health_data.get("failure_probability", 0.0) * 100
 
                 st.markdown(
                     f"""
                     <div class="{h_banner}">
-                        <div style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:#86868b;">
-                            Robot {target_h_robot} Health Diagnosis
-                        </div>
-                        <h1 style="font-size:44px; margin:8px 0; color:#1d1d1f; font-weight:700;">
-                            {score:.0f} / 100
-                        </h1>
-                        <div style="font-size:18px; font-weight:600; color:{'#1b5e20' if score >= 75 else ('#b78103' if score >= 60 else '#c62828')};">
-                            Condition: {status_text}
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#6A6A6A;">
+                                    Robot {target_h_robot} Operational Health Index
+                                </div>
+                                <div style="font-size:42px; margin:4px 0 2px 0; color:#1A1A1A; font-weight:800; letter-spacing:-0.03em;">
+                                    {score:.1f} <span style="font-size:18px; font-weight:500; color:#6A6A6A;">/ 100</span>
+                                </div>
+                                <div style="font-size:15px; font-weight:600; color:{status_color};">
+                                    Condition: {status_text}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size:11px; font-weight:600; color:#6A6A6A; text-transform: uppercase; letter-spacing: 0.04em;">ML Failure Risk</div>
+                                <div style="font-size:22px; font-weight:700; color:{'#C53030' if ml_prob > 50 else ('#E05C1A' if ml_prob > 20 else '#2E7D4E')}; margin-top: 2px;">
+                                    {ml_prob:.1f}%
+                                </div>
+                                <div style="font-size:12px; color:#6A6A6A; margin-top: 2px;">
+                                    Fault: <b>{pred_fault or 'Normal Operation'}</b>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     """,
@@ -1429,13 +2090,22 @@ elif selected_page == "Health Diagnostics":
 
                 sm1, sm2, sm3, sm4 = st.columns(4)
                 with sm1:
-                    st.metric("Thermal Reading", f"{health_data.get('temperature', 0):.1f} °C")
+                    st.metric("Peak Joint Temp", f"{health_data.get('temperature', 0):.1f} °C")
                 with sm2:
-                    st.metric("Vibration", f"{health_data.get('vibration', 0):.2f} mm/s")
+                    st.metric("Avg Joint Speed", f"{health_data.get('joint_speed', 0):.3f} rad/s")
                 with sm3:
-                    st.metric("Motor Current", f"{health_data.get('motor_current', 0):.2f} A")
+                    st.metric("Peak Motor Current", f"{health_data.get('motor_current', 0):.2f} A")
                 with sm4:
-                    st.metric("Torque / Load", f"{health_data.get('torque', 0):.1f} Nm")
+                    st.metric("Tool Load Current", f"{health_data.get('tool_current', 0):.3f} A")
+
+                st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+                diag1, diag2, diag3 = st.columns(3)
+                with diag1:
+                    st.metric("Average Joint Temp", f"{health_data.get('avg_temperature', 0):.1f} °C")
+                with diag2:
+                    st.metric("Active Incidents", f"{health_data.get('open_incidents_count', 0)}")
+                with diag3:
+                    st.metric("Scheduled Maintenance", f"{health_data.get('active_maintenance_count', 0)}")
 
             else:
                 st.error(f"Health score computation failed: {health_err}")
@@ -1447,7 +2117,7 @@ elif selected_page == "Health Diagnostics":
 # 15. PAGE 10: USER MANAGEMENT
 # ============================================================
 
-elif selected_page == "User Management":
+elif selected_page in ["Settings", "User Management"]:
     st.markdown(
         """
         <div class="main-header">
@@ -1471,7 +2141,7 @@ elif selected_page == "User Management":
                 u_role = st.selectbox("Role Assignment", ["Admin", "Supervisor", "Technician", "Operator"])
                 u_pwd = st.text_input("Initial Password", type="password", placeholder="••••••••")
 
-            submit_u = st.form_submit_button("Create User Profile", use_container_width=True)
+            submit_u = st.form_submit_button("Create User Profile", width="stretch")
             if submit_u:
                 if not u_name or not u_email or not u_pwd:
                     st.warning("Please provide Full Name, Email, and Password.")
@@ -1493,7 +2163,7 @@ elif selected_page == "User Management":
 
     if users:
         df_users = pd.DataFrame(users)
-        st.dataframe(df_users, use_container_width=True, hide_index=True)
+        st.dataframe(df_users, width="stretch", hide_index=True)
 
         st.markdown('<div class="section-header">Edit User Profile</div>', unsafe_allow_html=True)
         sel_u_id = st.selectbox("Select User ID", [u["user_id"] for u in users], format_func=lambda x: f"User {x} - {next((u['full_name'] for u in users if u['user_id'] == x), '')} ({next((u['role'] for u in users if u['user_id'] == x), '')})")
@@ -1509,7 +2179,7 @@ elif selected_page == "User Management":
                     e_u_phone = st.text_input("Phone", value=sel_u.get("phone", "") or "")
                     e_u_role = st.selectbox("Role", ["Admin", "Supervisor", "Technician", "Operator"], index=["admin", "supervisor", "technician", "operator"].index(str(sel_u.get("role", "Operator")).lower()) if str(sel_u.get("role", "Operator")).lower() in ["admin", "supervisor", "technician", "operator"] else 0)
 
-                    if st.form_submit_button("Update User Profile", use_container_width=True):
+                    if st.form_submit_button("Update User Profile", width="stretch"):
                         up_u_payload = {
                             "full_name": e_u_name,
                             "email": e_u_email,
@@ -1528,7 +2198,7 @@ elif selected_page == "User Management":
                 st.markdown("#### Remove User Profile")
                 st.write(f"Email: **{sel_u.get('email')}**")
                 st.write(f"Role: **{sel_u.get('role')}**")
-                if st.button(f"Delete User {sel_u_id}", use_container_width=True):
+                if st.button(f"Delete User {sel_u_id}", width="stretch"):
                     ok, msg = api.delete_user(sel_u_id)
                     if ok:
                         st.success("User deleted.")
@@ -1554,7 +2224,7 @@ elif selected_page == "Product Overview":
 
 st.markdown(
     """
-    <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #e5e5ea; text-align: center; font-size: 12px; color: #86868b;">
+    <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #1C152B; text-align: center; font-size: 12px; color: #737373;">
         RoboPulse AI • Predictive Robot Arm Monitoring and Maintenance Platform
     </div>
     """,

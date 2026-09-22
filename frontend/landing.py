@@ -12,19 +12,22 @@ def show_landing():
         <style>
         /* Apple typography & light canvas */
         html, body, [class*="css"] {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            letter-spacing: -0.015em;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            letter-spacing: -0.01em;
         }
 
-        /* Hide Streamlit header anchor link icons completely */
+        /* Hide Streamlit's accessibility shortcut and heading permalink controls. */
         [data-testid="stHeaderActionElements"],
         .stHeadingWithActionElements a,
         a.header-anchor,
         a[aria-label="Link to this heading"],
         button[aria-label="Copy link to heading"],
-        .stHeadingWithActionElements button,
-        .stHeadingWithActionElements [data-testid="stHeaderActionElements"],
-        a[href^="#"] {
+        button[aria-label*="Accessibility"],
+        button[title*="Accessibility"],
+        [data-testid*="Accessibility"],
+        [data-testid="stHeader"] a[href*="#"],
+        [data-testid="stMain"] .stHeadingWithActionElements a,
+        [data-testid="stMarkdownContainer"] .stHeadingWithActionElements a {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
@@ -32,8 +35,8 @@ def show_landing():
         }
 
         .stApp {
-            background-color: #ffffff;
-            color: #1d1d1f;
+            background-color: #FFFFFF !important;
+            color: #1A1A1A !important;
         }
 
         /* Top Navigation Bar */
@@ -42,27 +45,29 @@ def show_landing():
             align-items: center;
             justify-content: space-between;
             padding: 14px 24px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid #e5e5ea;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EEECE8;
             position: sticky;
             top: 0;
             z-index: 100;
             margin-bottom: 2rem;
+            border-radius: 6px;
         }
         .apple-nav-logo {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
-            color: #1d1d1f;
+            color: #1A1A1A !important;
             letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .apple-nav-links {
             display: flex;
-            gap: 28px;
+            gap: 24px;
             font-size: 13px;
-            font-weight: 400;
-            color: #515154;
+            font-weight: 500;
+            color: #6A6A6A;
         }
 
         /* Hero Section */
@@ -78,26 +83,30 @@ def show_landing():
         }
         .hero-badge {
             display: inline-block;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: #86868b;
-            margin-bottom: 12px;
+            color: #E05C1A !important;
+            background: #FFF4EC;
+            border: 1px solid #F4D2B8;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 14px;
             text-align: center;
         }
         .hero-headline {
-            font-size: 54px;
+            font-size: 46px;
             font-weight: 700;
-            color: #1d1d1f;
-            letter-spacing: -0.035em;
-            line-height: 1.1;
+            color: #1A1A1A !important;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
             margin: 0 0 16px 0;
             text-align: center;
         }
         .hero-subhead {
-            font-size: 19px;
-            color: #86868b;
+            font-size: 17px;
+            color: #6A6A6A !important;
             font-weight: 400;
             line-height: 1.5;
             margin: 0 auto 28px auto;
@@ -106,100 +115,104 @@ def show_landing():
             width: 100%;
         }
 
-        /* Apple Action Buttons */
+        /* Primary Action Buttons (Burnt Industrial Orange) */
         .btn-apple-primary {
             display: inline-block;
-            background-color: #0071e3;
-            color: #ffffff !important;
-            padding: 11px 26px;
-            border-radius: 980px;
-            font-size: 15px;
-            font-weight: 500;
+            background-color: #E05C1A !important;
+            color: #FFFFFF !important;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
             text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.25);
-            transition: all 0.2s ease;
-            border: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease;
+            border: 1px solid #E05C1A;
             cursor: pointer;
         }
         .btn-apple-primary:hover {
-            background-color: #0077ed;
-            box-shadow: 0 4px 14px rgba(0, 113, 227, 0.35);
+            background-color: #C84E12 !important;
+            border-color: #C84E12 !important;
+            transform: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
         /* Bento Grid Section */
         .bento-section {
-            background-color: #f5f5f7;
-            padding: 4.5rem 2rem;
-            border-radius: 30px;
+            background-color: #FFFFFF;
+            padding: 3.5rem 2rem;
+            border-radius: 8px;
+            border: 1px solid #EEECE8;
             margin: 3rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
         .bento-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
         .bento-title {
-            font-size: 38px;
+            font-size: 32px;
             font-weight: 700;
-            color: #1d1d1f;
-            letter-spacing: -0.03em;
-            margin: 0 0 10px 0;
+            color: #1A1A1A !important;
+            letter-spacing: -0.025em;
+            margin: 0 0 8px 0;
         }
         .bento-subtitle {
-            font-size: 17px;
-            color: #86868b;
+            font-size: 15px;
+            color: #6A6A6A !important;
             margin: 0;
         }
 
         /* Bento Card */
         .bento-card {
-            background: #ffffff;
-            border: 1px solid #e5e5ea;
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            background: #FFFFFF !important;
+            border: 1px solid #EEECE8 !important;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             height: 270px;
             min-height: 270px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
         .bento-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            border-color: #E05C1A !important;
+            box-shadow: 0 2px 6px rgba(198, 93, 33, 0.08);
         }
         .bento-tag {
             font-size: 11px;
             font-weight: 600;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: #86868b;
-            margin-bottom: 8px;
+            color: #E05C1A !important;
+            margin-bottom: 6px;
         }
         .bento-card-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            color: #1d1d1f;
+            color: #1A1A1A !important;
             letter-spacing: -0.02em;
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
         }
         .bento-card-desc {
-            font-size: 14px;
-            color: #86868b;
+            font-size: 13px;
+            color: #6A6A6A !important;
             line-height: 1.5;
-            margin: 0 0 16px 0;
+            margin: 0 0 14px 0;
         }
         .bento-stat-huge {
-            font-size: 46px;
-            font-weight: 800;
-            color: #1d1d1f;
+            font-size: 40px;
+            font-weight: 700;
+            color: #1A1A1A !important;
             letter-spacing: -0.03em;
-            margin: 8px 0;
+            margin: 6px 0;
         }
         .bento-stat-label {
-            font-size: 13px;
-            color: #1b5e20;
+            font-size: 12px;
+            color: #4A9B6F !important;
             font-weight: 600;
         }
 
@@ -207,22 +220,22 @@ def show_landing():
         .hero-metric-row {
             display: flex;
             justify-content: center;
-            gap: 18px;
-            margin: 2.5rem 0 1.5rem 0;
+            gap: 16px;
+            margin: 2rem 0 1.5rem 0;
             flex-wrap: wrap;
         }
         .hero-card {
-            background: #ffffff;
-            border: 1px solid #e5e5ea;
-            border-radius: 16px;
-            padding: 16px 22px;
+            background: #FFFFFF !important;
+            border: 1px solid #EEECE8 !important;
+            border-radius: 8px;
+            padding: 14px 20px;
             text-align: left;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             min-width: 170px;
         }
         .hero-card-label {
             font-size: 11px;
-            color: #86868b;
+            color: #6A6A6A !important;
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.04em;
@@ -230,22 +243,29 @@ def show_landing():
         .hero-card-val {
             font-size: 24px;
             font-weight: 700;
-            color: #1d1d1f;
+            color: #1A1A1A !important;
             margin: 4px 0 2px 0;
         }
         .hero-card-sub {
             font-size: 12px;
-            color: #1b5e20;
+            color: #4A9B6F !important;
             font-weight: 500;
         }
 
         /* Footer */
         .apple-footer {
-            border-top: 1px solid #e5e5ea;
+            border-top: 1px solid #EEECE8;
+            padding: 2.5rem 0 2rem 0;
+            text-align: center;
+            font-size: 12px;
+            color: #6A6A6A;
+        }
+        .apple-footer {
+            border-top: 1px solid #262626;
             padding: 3rem 0 2rem 0;
             text-align: center;
             font-size: 12px;
-            color: #86868b;
+            color: #737373;
             margin-top: 4rem;
         }
         </style>
@@ -258,11 +278,17 @@ def show_landing():
     # -----------------------------
     st.markdown(
         """
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0 20px 0; border-bottom:1px solid #f2f2f7; margin-bottom:1.5rem;">
-            <div style="font-size: 19px; font-weight: 700; color: #1d1d1f; letter-spacing: -0.02em;">
-                RoboPulse
-            </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 24px; background:#FFFFFF; border:1px solid #EEECE8; margin-bottom:1.5rem; border-radius:6px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" rx="4" fill="#E05C1A"/>
+                <circle cx="12" cy="12" r="4" fill="#FFFFFF"/>
+                <path d="M12 4v4m0 8v4m-8-8h4m8 0h4" stroke="#FFFFFF" stroke-width="2"/>
+            </svg>
+            <span style="font-size:18px; font-weight:700; color:#1A1A1A; letter-spacing:-0.02em;">RoboPulse</span>
         </div>
+        <div style="font-size:13px; color:#6A6A6A;">Industrial Robotics Predictive Intelligence Platform</div>
+    </div>
         """,
         unsafe_allow_html=True,
     )
@@ -348,26 +374,26 @@ def show_landing():
                     <svg viewBox="0 0 380 65" width="100%" height="65" style="overflow: visible;">
                         <defs>
                             <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#0071e3" stop-opacity="0.8"/>
-                                <stop offset="100%" stop-color="#30b0c7" stop-opacity="0.9"/>
+                                <stop offset="0%" stop-color="#E05C1A" stop-opacity="0.9"/>
+                                <stop offset="100%" stop-color="#E8A020" stop-opacity="0.9"/>
                             </linearGradient>
                             <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#30b0c7" stop-opacity="0.7"/>
-                                <stop offset="100%" stop-color="#34c759" stop-opacity="0.8"/>
+                                <stop offset="0%" stop-color="#4A9B6F" stop-opacity="0.9"/>
+                                <stop offset="100%" stop-color="#84A98C" stop-opacity="0.85"/>
                             </linearGradient>
                             <linearGradient id="wave3" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#ff9500" stop-opacity="0.7"/>
-                                <stop offset="100%" stop-color="#ff3b30" stop-opacity="0.8"/>
+                                <stop offset="0%" stop-color="#D94040" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#E05C1A" stop-opacity="0.8"/>
                             </linearGradient>
                         </defs>
                         <path d="M 0 32 Q 45 5, 95 32 T 190 32 T 285 32 T 380 32" fill="none" stroke="url(#wave1)" stroke-width="2.5" stroke-linecap="round"/>
                         <path d="M 0 42 Q 45 60, 95 42 T 190 42 T 285 42 T 380 42" fill="none" stroke="url(#wave2)" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 2"/>
                         <path d="M 0 25 Q 45 45, 95 25 T 190 25 T 285 25 T 380 25" fill="none" stroke="url(#wave3)" stroke-width="2" stroke-linecap="round"/>
                     </svg>
-                    <div style="display: flex; gap: 14px; font-size: 11px; color: #86868b; margin-top: 6px;">
-                        <span><span style="color:#0071e3;">●</span> Joint 1 Current</span>
-                        <span><span style="color:#30b0c7;">●</span> Joint 2 Current</span>
-                        <span><span style="color:#ff3b30;">●</span> Joint 3 Current</span>
+                    <div style="display: flex; gap: 14px; font-size: 11px; color: #6A6A6A; margin-top: 6px;">
+                        <span><span style="color:#FFFFFF;">●</span> Joint 1 Current</span>
+                        <span><span style="color: #E5E5E5;">●</span> Joint 2 Current</span>
+                        <span><span style="color:#737373;">●</span> Joint 3 Current</span>
                     </div>
                 </div>
             </div>
@@ -386,8 +412,8 @@ def show_landing():
                     <div class="bento-card-desc">Scikit-Learn classifier trained on real industrial stop datasets, projecting protective stops before hardware wear occurs.</div>
                 </div>
                 <div>
-                    <div class="bento-stat-huge" style="color: #0071e3;">&lt; 0.05s</div>
-                    <div class="bento-stat-label" style="color: #86868b; font-weight: 500;">Inference Latency</div>
+                    <div class="bento-stat-huge" style="color: #1A1A1A;">&lt; 0.05s</div>
+                    <div class="bento-stat-label" style="color: #6A6A6A; font-weight: 500;">Inference Latency</div>
                 </div>
             </div>
             """,
@@ -409,20 +435,20 @@ def show_landing():
                     <div class="bento-card-desc">Comprehensive technician assignment, calibration queues, and automated incident resolution workflows.</div>
                 </div>
                 <div style="margin-top: 6px;">
-                    <div style="display:flex; justify-content:space-between; font-size:12px; color:#515154; margin-bottom:6px; font-weight:500;">
+                    <div style="display:flex; justify-content:space-between; font-size:12px; color: #6A6A6A; margin-bottom:6px; font-weight:500;">
                         <span>Next Target: Joint Calibration</span>
-                        <span style="color:#0071e3; font-weight:600;">94% On Schedule</span>
+                        <span style="color:#E05C1A; font-weight:600;">94% On Schedule</span>
                     </div>
-                    <div style="width:100%; height:6px; background:#e5e5ea; border-radius:980px; overflow:hidden; display:flex; margin-bottom:12px;">
-                        <div style="width:65%; background:#0071e3;"></div>
-                        <div style="width:20%; background:#34c759;"></div>
-                        <div style="width:15%; background:#e5e5ea;"></div>
+                    <div style="width:100%; height:6px; background:#EAE8E4; border-radius:3px; overflow:hidden; display:flex; margin-bottom:12px;">
+                        <div style="width:65%; background:#4A9B6F;"></div>
+                        <div style="width:20%; background:#E8A020;"></div>
+                        <div style="width:15%; background:#E05C1A;"></div>
                     </div>
                     <div style="display:flex; flex-wrap:wrap; gap:6px;">
-                        <span style="background:#e8f5e9; color:#1b5e20; padding:4px 10px; border-radius:980px; font-size:11px; font-weight:600; border:1px solid #c8e6c9;">Preventive</span>
-                        <span style="background:#fff8e1; color:#b78103; padding:4px 10px; border-radius:980px; font-size:11px; font-weight:600; border:1px solid #ffe082;">Calibration</span>
-                        <span style="background:#f5f5f7; color:#515154; padding:4px 10px; border-radius:980px; font-size:11px; font-weight:600; border:1px solid #e5e5ea;">Inspection</span>
-                        <span style="background:#f0f7ff; color:#0071e3; padding:4px 10px; border-radius:980px; font-size:11px; font-weight:600; border:1px solid #bae0ff;">Active Queue</span>
+                        <span style="background:#EBF5EE; color:#2E7D4E; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid #B8E0C8;">Preventive</span>
+                        <span style="background:#FFF4EC; color:#E05C1A; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid #F4D2B8;">Calibration</span>
+                        <span style="background:#FEF6E9; color:#B26A00; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid #F8D8A0;">Inspection</span>
+                        <span style="background:#F8F7F4; color:#6A6A6A; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid #E2E0DA;">Active Queue</span>
                     </div>
                 </div>
             </div>
@@ -441,7 +467,7 @@ def show_landing():
                     <div class="bento-card-desc">Dynamic multi-factor health matrix evaluating thermal limits, vibration frequencies, and motor current draw.</div>
                 </div>
                 <div>
-                    <div class="bento-stat-huge" style="color: #1b5e20;">99.8%</div>
+                    <div class="bento-stat-huge" style="color: #1A1A1A;">99.8%</div>
                     <div class="bento-stat-label">Fleet Operational Health</div>
                 </div>
             </div>
@@ -455,10 +481,10 @@ def show_landing():
     st.markdown(
         """
         <div style="text-align: center; max-width: 600px; margin: 5rem auto 3rem auto; padding: 0 16px;">
-            <h2 style="font-size: 36px; font-weight: 700; color: #1d1d1f; letter-spacing: -0.03em; margin-bottom: 12px;">
+            <h2 style="font-size: 32px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.03em; margin-bottom: 12px;">
                 Ready to monitor your fleet?
             </h2>
-            <p style="font-size: 16px; color: #86868b; margin-bottom: 24px;">
+            <p style="font-size: 16px; color: #6A6A6A; margin-bottom: 24px;">
                 Sign in with your operator credentials to access real-time telemetry, predictive analytics, and automated maintenance.
             </p>
         </div>

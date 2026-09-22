@@ -20,13 +20,12 @@ def show_login():
     st.markdown(
         """
         <style>
-        /* Apple SF Pro typography & Pure White Minimalist Canvas */
+                /* Light Industrial Orange Canvas */
         html, body, [class*="css"] {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            letter-spacing: -0.015em;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            letter-spacing: -0.01em;
         }
 
-        /* Hide Streamlit header anchor link icons completely */
         [data-testid="stHeaderActionElements"],
         .stHeadingWithActionElements a,
         a.header-anchor,
@@ -41,9 +40,22 @@ def show_login():
             pointer-events: none !important;
         }
 
+        /* Hide Streamlit's accessibility shortcut and heading permalink controls. */
+        button[aria-label*="Accessibility"],
+        button[title*="Accessibility"],
+        [data-testid*="Accessibility"],
+        [data-testid="stHeader"] a[href*="#"],
+        [data-testid="stMain"] .stHeadingWithActionElements a,
+        [data-testid="stMarkdownContainer"] .stHeadingWithActionElements a {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         .stApp {
-            background-color: #ffffff;
-            color: #1d1d1f;
+            background-color: #F8F7F4 !important;
+            color: #1A1A1A !important;
         }
 
         /* Top Bar */
@@ -52,129 +64,135 @@ def show_login():
             align-items: center;
             justify-content: space-between;
             padding: 14px 20px;
-            border-bottom: 1px solid #e5e5ea;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #EEECE8;
             margin-bottom: 2rem;
         }
 
         /* Top spacing */
         .login-wrapper {
-            max-width: 460px;
+            max-width: 440px;
             margin: 2.5rem auto 1rem auto;
             text-align: center;
         }
 
-        /* Title matching Apple ID / Store */
+        /* Title */
         .apple-title {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 700;
-            color: #1d1d1f;
-            letter-spacing: -0.025em;
-            margin-bottom: 2rem;
-            line-height: 1.15;
+            color: #1A1A1A !important;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
             text-align: center;
         }
 
-        /* Apple Blue Links */
+        /* Industrial Links */
         .apple-link {
-            color: #0071e3;
+            color: #E05C1A !important;
             text-decoration: none;
             font-size: 14px;
-            font-weight: 400;
+            font-weight: 500;
             transition: color 0.15s ease;
         }
         .apple-link:hover {
             text-decoration: underline;
-            color: #0077ed;
+            color: #C84E12 !important;
         }
 
-        /* Form Container - Borderless minimal */
+        /* Form Container - Clean White Card */
         [data-testid="stForm"] {
-            background: #ffffff !important;
-            border: none !important;
-            padding: 0 !important;
-            box-shadow: none !important;
+            background: #FFFFFF !important;
+            border: 1px solid #EEECE8 !important;
+            border-radius: 8px !important;
+            padding: 28px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
         }
 
-        /* Apple Styled Inputs */
+        /* Styled Inputs */
         .stTextInput > div > div > input {
-            background-color: #ffffff !important;
-            color: #1d1d1f !important;
-            border: 1.5px solid #d2d2d7 !important;
-            border-radius: 14px !important;
-            font-size: 16px !important;
-            padding: 14px 18px !important;
-            height: 52px !important;
-            transition: all 0.2s ease !important;
+            background-color: #FFFFFF !important;
+            color: #1A1A1A !important;
+            border: 1px solid #EEECE8 !important;
+            border-radius: 6px !important;
+            font-size: 14px !important;
+            padding: 10px 14px !important;
+            height: 44px !important;
+            transition: all 0.15s ease !important;
         }
 
         .stTextInput > div > div > input:focus {
-            border-color: #0071e3 !important;
-            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15) !important;
+            border-color: #E05C1A !important;
+            box-shadow: 0 0 0 2px rgba(198, 93, 33, 0.15) !important;
         }
 
-        /* Clean Submit Button */
+        /* Submit Button (Burnt Industrial Orange) */
         .stButton > button, .stFormSubmitButton > button {
-            background-color: #0071e3 !important;
-            color: #ffffff !important;
-            border: none !important;
-            border-radius: 980px !important;
-            font-size: 15px !important;
-            font-weight: 500 !important;
-            padding: 10px 24px !important;
-            height: 44px !important;
-            box-shadow: 0 2px 6px rgba(0, 113, 227, 0.2) !important;
-            transition: all 0.2s ease !important;
+            background-color: #E05C1A !important;
+            color: #FFFFFF !important;
+            border: 1px solid #E05C1A !important;
+            border-radius: 6px !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            padding: 10px 20px !important;
+            height: 42px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.15s ease !important;
             margin-top: 6px !important;
         }
 
         .stButton > button:hover, .stFormSubmitButton > button:hover {
-            background-color: #0077ed !important;
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3) !important;
+            background-color: #C84E12 !important;
+            border-color: #C84E12 !important;
+            transform: none !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
         }
 
         /* Checkbox styling */
         [data-testid="stCheckbox"] {
             display: flex;
             justify-content: center;
-            margin: 1.2rem 0;
-            color: #1d1d1f !important;
-            font-size: 14px !important;
+            margin: 1rem 0;
+            color: #6A6A6A !important;
+            font-size: 13px !important;
         }
 
         /* Demo credentials subtle card */
         .demo-subtle {
             text-align: center;
             font-size: 12px;
-            color: #86868b;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #f2f2f7;
+            color: #6A6A6A;
+            margin-top: 1.8rem;
+            padding: 14px;
+            background: #FFFFFF;
+            border: 1px solid #EEECE8;
+            border-radius: 6px;
             line-height: 1.6;
         }
         .demo-subtle code {
-            color: #1d1d1f;
-            background: #f5f5f7;
+            color: #1A1A1A;
+            background: #F8F7F4;
+            border: 1px solid #EEECE8;
             padding: 2px 6px;
             border-radius: 4px;
+            font-weight: 600;
         }
-        /* Secondary switch button styling */
         .apple-switch-btn > div > button {
             background-color: transparent !important;
-            color: #0071e3 !important;
+            color: #E05C1A !important;
             border: none !important;
             box-shadow: none !important;
             font-size: 14px !important;
-            font-weight: 400 !important;
+            font-weight: 500 !important;
             padding: 8px 16px !important;
             margin-top: 4px !important;
         }
         .apple-switch-btn > div > button:hover {
-            color: #0077ed !important;
+            color: #C84E12 !important;
             text-decoration: underline !important;
             background-color: transparent !important;
             box-shadow: none !important;
-        }
-        </style>
+        }</style>
         """,
         unsafe_allow_html=True,
     )
@@ -182,11 +200,17 @@ def show_login():
     # Clean Top Bar
     st.markdown(
         """
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0 20px 0; border-bottom:1px solid #f2f2f7; margin-bottom:1.5rem;">
-            <div style="font-size: 19px; font-weight: 700; color: #1d1d1f; letter-spacing: -0.02em;">
-                RoboPulse
-            </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#FFFFFF; border-bottom:1px solid #EEECE8; margin-bottom:1.5rem; border-radius:6px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" rx="4" fill="#E05C1A"/>
+                <circle cx="12" cy="12" r="4" fill="#FFFFFF"/>
+                <path d="M12 4v4m0 8v4m-8-8h4m8 0h4" stroke="#FFFFFF" stroke-width="2"/>
+            </svg>
+            <span style="font-size:18px; font-weight:700; color:#1A1A1A; letter-spacing:-0.02em;">RoboPulse</span>
         </div>
+        <span style="font-size:12px; font-weight:500; color:#6A6A6A; background:#F8F7F4; padding:4px 8px; border-radius:4px; border:1px solid #EEECE8;">Enterprise Portal</span>
+    </div>
         """,
         unsafe_allow_html=True,
     )
@@ -323,3 +347,4 @@ def show_login():
             if st.button("Sign In", key="switch_to_signin", use_container_width=True):
                 st.session_state["auth_mode"] = "signin"
                 st.rerun()
+
